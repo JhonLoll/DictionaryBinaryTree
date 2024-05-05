@@ -25,7 +25,7 @@ O mesmo foi desenvolvido utilizando Python, e as bibliotecas, Pillow (Ligações
 
 Caso o programa esteja dando algum erro relacionado às bibliotecas utilizadas,
 
-Instale as duas bibliotecas que são usadas no projeto, para isso, crie um ambiente de desenvolvimento. 
+Instale as duas bibliotecas que são usadas no projeto, para isso, crie um ambiente de desenvolvimento, e o ative.. ex. no windows: "cd .venv". 
 
 Instale a primeira bibliteca usando o link a seguir:
 
