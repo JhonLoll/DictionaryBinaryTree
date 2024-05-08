@@ -9,7 +9,7 @@ Criadores:
 """
 # Importando a biblioteca Tkinter do python para criar a vizualização da árvore
 import tkinter as tk
-from tkinter import messagebox, ttk
+from tkinter import messagebox, ttk, scrolledtext
 import json
 import graphviz
 from PIL import Image, ImageTk
@@ -144,37 +144,48 @@ def ler_arquivo_json():  # Define uma função chamada ler_arquivo_json
         messagebox.showerror("Erro", "Erro ao decodificar o arquivo JSON.")  # Exibe uma mensagem de erro
 
         
-def apresentar_pre_ordem(raiz):
+def apresentar_pre_ordem(raiz, apresentacao_arvore):
     if raiz is not None:
         print(raiz.chave, raiz.valor)  # Visita o nó atual, e imprime
-        apresentar_pre_ordem(raiz.esquerdo)  # Visita o filho à esquerda
-        apresentar_pre_ordem(raiz.direito)  # Visita o filho à direita
+        apresentacao_arvore.insert(tk.END, f"{raiz.chave} - {raiz.valor}\n") # Insere o valor atual no campo scrolledText do tkinter
+        apresentar_pre_ordem(raiz.esquerdo, apresentacao_arvore)  # Visita o filho à esquerda
+        apresentar_pre_ordem(raiz.direito, apresentacao_arvore)  # Visita o filho à direita
 
 
-def apresentar_em_ordem(raiz):
+def apresentar_em_ordem(raiz, apresentacao_arvore):
     if raiz is not None:
-        apresentar_em_ordem(raiz.esquerdo)  # Visita o filho à esquerda
+        apresentar_em_ordem(raiz.esquerdo, apresentacao_arvore)  # Visita o filho à esquerda
         print(raiz.chave, raiz.valor)  # Visita o nó atual, e imprime
-        apresentar_em_ordem(raiz.direito)  # Visita o filho à direita
+        apresentacao_arvore.insert(tk.END, f"{raiz.chave} - {raiz.valor}\n") # Insere o valor atual no campo scrolledText do tkinter
+        apresentar_em_ordem(raiz.direito, apresentacao_arvore)  # Visita o filho à direita
 
 
-def apresentar_pos_ordem(raiz):
+def apresentar_pos_ordem(raiz, apresentacao_arvore):
     if raiz is not None:
-        apresentar_pos_ordem(raiz.esquerdo)  # Visita o filho à esquerda
-        apresentar_pos_ordem(raiz.direito)  # Visita o filho à direita
+        apresentar_pos_ordem(raiz.esquerdo, apresentacao_arvore)  # Visita o filho à esquerda
+        apresentar_pos_ordem(raiz.direito, apresentacao_arvore)  # Visita o filho à direita
+        apresentacao_arvore.insert(tk.END, f"{raiz.chave} - {raiz.valor}\n") # Insere o valor atual no campo scrolledText do tkinter
         print(raiz.chave, "-", raiz.valor)  # Visita o nó atual, e imprime
 
 
-def apresentar_arvore():
-    apresentar_pre_ordem(raiz) #Chama a função para apresentar a arvore em pre ordem
-    print("\n---")  # Imprime uma linha horizontal
-    apresentar_em_ordem(raiz) #Chama a função para apresentar a arvore em ordem
-    print("\n---")  # Outra linha horizontal para separação
-    apresentar_pos_ordem(raiz) #Chama a função para apresentar a arvore em pos orderm
-    print("\n---")  # Mais uma linha horizontal para separação
-    exibir_imagem_arvore()  # Função para exibir uma imagem da árvore
+# def apresentar_arvore():
+#     apresentar_pre_ordem(raiz) #Chama a função para apresentar a arvore em pre ordem
+#     print("\n---")  # Imprime uma linha horizontal
+#     apresentar_em_ordem(raiz) #Chama a função para apresentar a arvore em ordem
+#     print("\n---")  # Outra linha horizontal para separação
+#     apresentar_pos_ordem(raiz) #Chama a função para apresentar a arvore em pos orderm
+#     print("\n---")  # Mais uma linha horizontal para separação
+#     exibir_imagem_arvore()  # Função para exibir uma imagem da árvore
 
+def in_ordem():
+    apresentar_em_ordem(raiz, apresentacao_arvore)
 
+def post_ordem():
+    apresentar_pos_ordem(raiz, apresentacao_arvore)
+    
+def pre_ordem():
+    apresentar_pre_ordem(raiz, apresentacao_arvore)
+  
 # Função para exibir a imagem da árvore na janela
 def exibir_imagem_arvore():
     imagem = Image.open("arvore.png")  # Abre a imagem da árvore
@@ -251,9 +262,21 @@ botao_ler_json = tk.Button(janela, text="Ler JSON", command=ler_arquivo_json)
 botao_ler_json.pack()
 
 # Cria um botão para apresentar a árvore e o adiciona à janela
-botao_apresentar = tk.Button(janela, text="Apresentar Árvore", command=apresentar_arvore)
-botao_apresentar.pack()
+# botao_apresentar = tk.Button(janela, text="Apresentar Árvore", command=apresentar_arvore)
+# botao_apresentar.pack()
 
+botao_em_ordem = tk.Button(janela, text="Em ordem", command=in_ordem)
+botao_em_ordem.pack()
+
+botao_post_ordem = tk.Button(janela, text="Pos ordem", command=post_ordem)
+botao_post_ordem.pack()
+
+botao_pre_ordem = tk.Button(janela, text="Pre ordem", command=pre_ordem)
+botao_pre_ordem.pack()
+
+apresentacao_arvore = scrolledtext.ScrolledText(janela, width=100, height=50, wrap=tk.WORD)
+# apresentacao_arvore.configure(state="disabled")
+apresentacao_arvore.pack()
 # Cria um widget Label para exibir a imagem da árvore e o adiciona à janela
 label_imagem = tk.Label(janela)
 label_imagem.pack()
