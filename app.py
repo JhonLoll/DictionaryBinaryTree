@@ -9,8 +9,8 @@ Criadores:
 """
 # Importando a biblioteca Tkinter do python para criar a vizualização da árvore
 import tkinter as tk
-from tkinter import messagebox, ttk, scrolledtext
-from ttkthemes import ThemedTk
+from tkinter import messagebox, ttk
+# from ttkthemes import ThemedTk
 import json
 import graphviz
 from PIL import Image, ImageTk
@@ -206,14 +206,15 @@ def mostrar_arvore():
 
 
 # Cria uma janela com um tema moderno
-janela = ThemedTk(theme="winxpblue")  # "arc" é um tema moderno disponível no ttkthemes
+janela = tk.Tk() 
+style = ttk.Style()
+style.theme_use('clam')
 
 # Define o título da janela
 janela.title("Busca em Árvore Binária")
 
 # Define o tamanho inicial da janela
 janela.geometry("1200x720")
-janela.state('zoomed')
 janela.configure(background='#ece9d8')
 
 
