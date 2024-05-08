@@ -10,10 +10,12 @@ Criadores:
 # Importando a biblioteca Tkinter do python para criar a vizualização da árvore
 import tkinter as tk
 from tkinter import messagebox, ttk, scrolledtext
+from ttkthemes import ThemedTk
 import json
 import graphviz
 from PIL import Image, ImageTk
 import random
+from customtkinter import *
 
 class No:
     """
@@ -147,52 +149,47 @@ def ler_arquivo_json():  # Define uma função chamada ler_arquivo_json
 def apresentar_pre_ordem(raiz, apresentacao_arvore):
     if raiz is not None:
         print(raiz.chave, raiz.valor)  # Visita o nó atual, e imprime
-        apresentacao_arvore.insert(tk.END, f"{raiz.chave} - {raiz.valor}\n") # Insere o valor atual no campo scrolledText do tkinter
+        apresentacao_arvore.insert("",tk.END, text="1", values=(f"{raiz.chave}",f"{raiz.valor}")) # Insere o valor atual no campo treeview do tkinter
         apresentar_pre_ordem(raiz.esquerdo, apresentacao_arvore)  # Visita o filho à esquerda
         apresentar_pre_ordem(raiz.direito, apresentacao_arvore)  # Visita o filho à direita
-
 
 def apresentar_em_ordem(raiz, apresentacao_arvore):
     if raiz is not None:
         apresentar_em_ordem(raiz.esquerdo, apresentacao_arvore)  # Visita o filho à esquerda
         print(raiz.chave, raiz.valor)  # Visita o nó atual, e imprime
-        apresentacao_arvore.insert(tk.END, f"{raiz.chave} - {raiz.valor}\n") # Insere o valor atual no campo scrolledText do tkinter
+        apresentacao_arvore.insert("",tk.END, text="1", values=(f"{raiz.chave}",f"{raiz.valor}")) # Insere o valor atual no campo treeview do tkinter
         apresentar_em_ordem(raiz.direito, apresentacao_arvore)  # Visita o filho à direita
-
 
 def apresentar_pos_ordem(raiz, apresentacao_arvore):
     if raiz is not None:
         apresentar_pos_ordem(raiz.esquerdo, apresentacao_arvore)  # Visita o filho à esquerda
         apresentar_pos_ordem(raiz.direito, apresentacao_arvore)  # Visita o filho à direita
-        apresentacao_arvore.insert(tk.END, f"{raiz.chave} - {raiz.valor}\n") # Insere o valor atual no campo scrolledText do tkinter
+        apresentacao_arvore.insert("",tk.END, text="1", values=(f"{raiz.chave}",f"{raiz.valor}")) # Insere o valor atual no campo treeview do tkinter
         print(raiz.chave, "-", raiz.valor)  # Visita o nó atual, e imprime
-
-
-# def apresentar_arvore():
-#     apresentar_pre_ordem(raiz) #Chama a função para apresentar a arvore em pre ordem
-#     print("\n---")  # Imprime uma linha horizontal
-#     apresentar_em_ordem(raiz) #Chama a função para apresentar a arvore em ordem
-#     print("\n---")  # Outra linha horizontal para separação
-#     apresentar_pos_ordem(raiz) #Chama a função para apresentar a arvore em pos orderm
-#     print("\n---")  # Mais uma linha horizontal para separação
-#     exibir_imagem_arvore()  # Função para exibir uma imagem da árvore
-
+        
 def in_ordem():
-    apresentar_em_ordem(raiz, apresentacao_arvore)
+    clear_treeview()
+    apresentar_em_ordem(raiz, tree)
 
 def post_ordem():
-    apresentar_pos_ordem(raiz, apresentacao_arvore)
+    clear_treeview()
+    apresentar_pos_ordem(raiz, tree)
     
 def pre_ordem():
-    apresentar_pre_ordem(raiz, apresentacao_arvore)
+    clear_treeview()
+    apresentar_pre_ordem(raiz, tree)
+    
+def clear_treeview():
+    for item in tree.get_children():
+        tree.delete(item)
   
 # Função para exibir a imagem da árvore na janela
 def exibir_imagem_arvore():
     imagem = Image.open("arvore.png")  # Abre a imagem da árvore
     imagem = imagem.resize((300, 300), Image.ANTIALIAS)  # Redimensiona a imagem para 300x300 pixels
     imagem = ImageTk.PhotoImage(imagem)  # Converte a imagem para um formato compatível com Tkinter
-    label_imagem.config(image=imagem)  # Configura o widget label_imagem para exibir a imagem
-    label_imagem.image = imagem  # Armazena a imagem para evitar que ela seja descartada
+    # label_imagem.config(image=imagem)  # Configura o widget label_imagem para exibir a imagem
+    # label_imagem.image = imagem  # Armazena a imagem para evitar que ela seja descartada
 
 
 # Função para criar a imagem da árvore
@@ -208,20 +205,17 @@ def mostrar_arvore():
     exibir_imagem_arvore()  # Exibe a imagem da árvore na GUI
 
 
-# Cria a janela principal da GUI
-janela = tk.Tk()
+# Cria uma janela com um tema moderno
+janela = ThemedTk(theme="winxpblue")  # "arc" é um tema moderno disponível no ttkthemes
 
 # Define o título da janela
 janela.title("Busca em Árvore Binária")
 
 # Define o tamanho inicial da janela
-janela.geometry("800x500")
+janela.geometry("1200x720")
+janela.state('zoomed')
+janela.configure(background='#ece9d8')
 
-# Cria um objeto de estilo para personalizar a aparência dos widgets
-style = ttk.Style()
-
-# Aplica o tema "clam" para uma aparência mais moderna
-style.theme_use("clam")
 
 # Cria um widget Label com um título e o adiciona à janela
 label_titulo = ttk.Label(janela, text="Busca em Árvore Binária", font=("Helvetica", 16))
@@ -235,51 +229,86 @@ botao_mostrar_arvore.pack(pady=20)
 label_rodape = ttk.Label(janela, text="Desenvolvido por JhonHR, Ayalon Dutra, Hiago Ribeiro e Matheus Moreira", foreground="#666", font=("Helvetica", 8))
 label_rodape.pack(side=tk.BOTTOM, pady=10)
 
+# Titulo do widgt de Entradas de Valores
+label_titulo_entradas = ttk.Label(janela, text="Inserção de Valores", font=("Helvetica", 12))
+label_titulo_entradas.pack(pady=10)
+
+# Cria um widget para separar os campos de inserção de valores
+frame_entradas = ttk.Frame(janela)
+frame_entradas.pack(pady=20)
+
 # Cria um widget Label para a entrada de palavras e o adiciona à janela
-tk.Label(janela, text="Palavra").pack()
-entrada_palavra = tk.Entry(janela)
-entrada_palavra.pack()
+tk.Label(frame_entradas, text="Palavra", background='#ece9d8').grid(row=0, column=0, padx=5, pady=5, sticky="w")
+entrada_palavra = tk.Entry(frame_entradas)
+entrada_palavra.grid(row=0, column=1, padx=5, pady=5, sticky="ew")
 
 # Cria um widget Label para a entrada de descrições e o adiciona à janela
-tk.Label(janela, text="Descrição").pack()
-entrada_descricao = tk.Entry(janela)
-entrada_descricao.pack()
+tk.Label(frame_entradas, text="Descrição", background='#ece9d8').grid(row=1, column=0, padx=5, pady=5, sticky="w")
+entrada_descricao = tk.Entry(frame_entradas)
+entrada_descricao.grid(row=1, column=1, padx=5, pady=5, sticky="ew")
+
+# Titulo do widgt de botões de ações
+label_titulo_botoes = ttk.Label(janela, text="Ações", font=("Helvetica", 12))
+label_titulo_botoes.pack(pady=10)
+
+# Cria um widget para separar os botões de ações da janela
+frame_botao = ttk.Frame(janela)
+frame_botao.pack(pady=20)
 
 # Cria um botão para inserir palavras na árvore e o adiciona à janela
-botao_inserir = tk.Button(janela, text="Inserir", command=inserir_palavra)
-botao_inserir.pack()
+botao_inserir = ttk.Button(frame_botao, text="Inserir", command=inserir_palavra)
+botao_inserir.grid(row=0, column=0, padx=5, pady=5)
 
 # Cria um botão para buscar palavras na árvore e o adiciona à janela
-botao_buscar = tk.Button(janela, text="Buscar", command=buscar_palavra)
-botao_buscar.pack()
+botao_buscar = ttk.Button(frame_botao, text="Buscar", command=buscar_palavra)
+botao_buscar.grid(row=0, column=1, padx=5, pady=5)
 
 # Cria um botão para remover palavras da árvore e o adiciona à janela
-botao_remover = tk.Button(janela, text="Remover", command=remover_palavra)
-botao_remover.pack()
+botao_remover = ttk.Button(frame_botao, text="Remover", command=remover_palavra)
+botao_remover.grid(row=1, column=0, padx=5, pady=5)
+
 
 # Cria um botão para ler um arquivo JSON e adicionar palavras à árvore e o adiciona à janela
-botao_ler_json = tk.Button(janela, text="Ler JSON", command=ler_arquivo_json)
-botao_ler_json.pack()
+botao_ler_json = ttk.Button(frame_botao, text="Ler JSON", command=ler_arquivo_json)
+botao_ler_json.grid(row=1, column=1, padx=5, pady=5)
 
-# Cria um botão para apresentar a árvore e o adiciona à janela
-# botao_apresentar = tk.Button(janela, text="Apresentar Árvore", command=apresentar_arvore)
-# botao_apresentar.pack()
 
-botao_em_ordem = tk.Button(janela, text="Em ordem", command=in_ordem)
-botao_em_ordem.pack()
+# Titulo do widgt de botões de apresentação
+label_titulo_apresentacao = ttk.Label(janela, text="Apresentar Árvore", font=("Helvetica", 12))
+label_titulo_apresentacao.pack(pady=10)
 
-botao_post_ordem = tk.Button(janela, text="Pos ordem", command=post_ordem)
-botao_post_ordem.pack()
 
-botao_pre_ordem = tk.Button(janela, text="Pre ordem", command=pre_ordem)
-botao_pre_ordem.pack()
+# Cria um widget para os botões de apresentação da arvore
+frame_opcoes = ttk.Frame(janela)
+frame_opcoes.pack(pady=20)
 
-apresentacao_arvore = scrolledtext.ScrolledText(janela, width=100, height=50, wrap=tk.WORD)
-# apresentacao_arvore.configure(state="disabled")
-apresentacao_arvore.pack()
-# Cria um widget Label para exibir a imagem da árvore e o adiciona à janela
-label_imagem = tk.Label(janela)
-label_imagem.pack()
+# Botão que aciona a função de apresentação em ordem
+botao_em_ordem = ttk.Button(frame_opcoes, text="Em ordem", command=in_ordem)
+botao_em_ordem.grid(row=0, column=0, padx=5, pady=5)
+
+# Botão que aciona a função de apresentação em pos ordem
+botao_post_ordem = ttk.Button(frame_opcoes, text="Pos ordem", command=post_ordem)
+botao_post_ordem.grid(row=0, column=1, padx=5, pady=5)
+
+# Botão que aciona a função de apresentação em pre ordem
+botao_pre_ordem = ttk.Button(frame_opcoes, text="Pre ordem", command=pre_ordem)
+botao_pre_ordem.grid(row=1, column=0, padx=5, pady=5)
+
+# Widget para listar a arvore quando algum dos botões de apresentação forem pressionados
+frame_arvore = ttk.Frame(janela)
+frame_arvore.pack(pady=0)
+
+tree = ttk.Treeview(frame_arvore, columns=('Palavra', 'Descrição'), show='headings')
+tree.heading('Palavra', text='Palavra')
+tree.heading('Descrição', text='Descrição')
+tree.pack(fill=tk.BOTH, expand=True)
+
+# apresentacao_arvore = scrolledtext.ScrolledText(janela, width=100, height=50, wrap=tk.WORD)
+# apresentacao_arvore.pack()
+
+# # Cria um widget Label para exibir a imagem da árvore e o adiciona à janela
+# label_imagem = ttk.Label(janela)
+# label_imagem.pack()
 
 # Inicia o loop principal da GUI, mantendo a janela aberta até que o usuário a feche manualmente
-janela.mainloop()
+janela.mainloop() 
